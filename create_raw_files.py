@@ -3,16 +3,25 @@ import numpy
 
 info = mne.io.meas_info.create_info(['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32'],1000,["eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg","eeg"])
 
+##get correspondance between trials and sound durations
 durations = numpy.genfromtxt('mne_data/thesis/DATA/durations.txt')
 
+##for each subject
 for i in numpy.arange(1,11):
 ##for i in numpy.arange(2,3):
+
+	##extract EEG from txt file
 	temp = numpy.genfromtxt('mne_data/thesis/DATA/subject'+`i`+'/EEG_Data_subject'+`i`+'.txt', delimiter='\t')
 	temp2 = temp.transpose()
-		##mne plot function divides eeg traces by 2*e-5, but that is not needed for our data (misc traces by e-3 | check plot function in mne.io.(base.py) )
+
+	##convert to Volts
 	temp3 = temp2/1000000.0
+
+	##store all trials in single raw
 	rawfile = mne.io.array.RawArray(temp3,info)
 	rawfile.save('mne_data/thesis/raw_files/subject'+`i`+'_whole_raw.fif',picks=None, tmin=0, tmax=None, drop_small_buffer=False, proj=False, format='single', overwrite=True, split_size='2GB')
+
+	##set trials apart and save in raw files
 	trials = numpy.ones(11)
 	trials = trials.astype(int)
 	for k in numpy.arange(1,111):
